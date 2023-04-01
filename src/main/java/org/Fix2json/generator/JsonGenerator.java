@@ -7,10 +7,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import quickfix.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -50,9 +47,7 @@ public class JsonGenerator {
             Field<?> field = iterator.next();
             if( !dd.getFieldType(field.getTag()).equals(FieldType.NUMINGROUP) ){
                 jsonObject.put(
-                        FixParser.getHumanFieldName(
-                                field.getTag(), dd
-                        ),
+                        FixParser.getHumanFieldName(field.getTag(), dd),
                         fieldMap.getString(field.getTag())
                 );
             }
@@ -77,7 +72,10 @@ public class JsonGenerator {
         this.writeJsonMessagesToFile(args.jsonFile.toString(), jsonArray);
     }
 
-    private void writeJsonMessagesToFile(String jsonFile, JSONArray jsonMessages) {
+    private void writeJsonMessagesToFile(String jsonFile, JSONArray jsonMessages) throws IOException {
+        FileWriter writer = new FileWriter(jsonFile, false);
+        JSONArray.writeJSONString(jsonMessages, writer);
+        writer.close();
     }
 
     public static class FixParser {
