@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c0bbc29f-ca92-47bc-8170-274fb8fe9c6e" name="Changes" comment="Added logic to read and parse fix messages from a file">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/Fix2json/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/Fix2json/generator/Fix2JsonCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/Fix2json/generator/JsonGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/FIX42.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/FIX44.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/Fix2json/generator/JsonGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/Fix2json/generator/JsonGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,12 +46,8 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="workspaceImportEnabled" value="true" />
-      </MavenImportingSettings>
-    </option>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="2NnDOZz3sPJzKuSBmaINn2vhZUk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -70,11 +60,12 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "JsonBuilder",
     "last_opened_file_path": "/Users/tarugarg/IdeaProjects/Fix2Json/src/main/resources",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "copyright"
+    "settings.editor.selected.configurable": "project.propCompiler"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -92,7 +83,7 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="org.Fix2json.Main" />
       <module name="Fix2Json" />
-      <option name="PROGRAM_PARAMETERS" value="-mf ./src/main/java/org/Fix2json/a.txt -jf ./src/main/java/org/Fix2json/b.txt -d \x01 -fv 4.2" />
+      <option name="PROGRAM_PARAMETERS" value="-mf ./src/main/java/org/Fix2json/a.txt -jf ./src/main/java/org/Fix2json/b.txt -d \x01 -fv 4.4" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="org.Fix2json.enums.*" />
