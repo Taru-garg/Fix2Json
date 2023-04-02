@@ -11,9 +11,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@SuppressWarnings("unchecked")
 public class JsonGenerator {
 
-    @SuppressWarnings("unchecked")
     private @NotNull JSONObject toJson(@NotNull Message message, @NotNull DataDictionary dd) throws FieldNotFound {
         JSONObject jsonFixMessage = new JSONObject();
         jsonFixMessage.put( // Get the jsonified Header part of the FIX message
@@ -40,13 +40,12 @@ public class JsonGenerator {
         return jsonFixMessage;
     }
 
-    @SuppressWarnings("unchecked")
     private @NotNull JSONObject getJsonifiedMessage(@NotNull FieldMap fieldMap, DataDictionary dd) throws FieldNotFound {
         JSONObject jsonObject = new JSONObject();
         Iterator<Field<?>> iterator = fieldMap.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Field<?> field = iterator.next();
-            if( !dd.getFieldType(field.getTag()).equals(FieldType.NUMINGROUP) ){
+            if (!dd.getFieldType(field.getTag()).equals(FieldType.NUMINGROUP)) {
                 jsonObject.put(
                         FixParser.getHumanFieldName(field.getTag(), dd),
                         fieldMap.getString(field.getTag())
@@ -55,13 +54,13 @@ public class JsonGenerator {
         }
 
         Iterator<Integer> groupKeyIterator = fieldMap.groupKeyIterator();
-        while(groupKeyIterator.hasNext()) {
+        while (groupKeyIterator.hasNext()) {
             JSONArray groupJsonObject = new JSONArray();
             Integer groupField = groupKeyIterator.next();
             String humanReadableGroupName = FixParser.getHumanFieldName(groupField, dd);
             Group group = new Group(groupField, 0);
             int i = 1;
-            while(fieldMap.hasGroup(i, groupField)) {
+            while (fieldMap.hasGroup(i, groupField)) {
                 fieldMap.getGroup(i, group);
                 groupJsonObject.add(this.getJsonifiedMessage(group, dd));
                 i++;
@@ -72,7 +71,6 @@ public class JsonGenerator {
         return jsonObject;
     }
 
-    @SuppressWarnings("unchecked")
     public void generate(@NotNull Fix2JsonCommand args) throws Exception {
         FixParser fixParser = new FixParser(args.fixVersion);
         ArrayList<Message> rawMessages = fixParser.getMessagesFromFile(args.messageFile, args.delimiter);
@@ -110,7 +108,7 @@ public class JsonGenerator {
         }
 
         @Contract(pure = true)
-        public static String getHumanFieldName(int field, DataDictionary dd) {
+        public static String getHumanFieldName(int field, @NotNull DataDictionary dd) {
             return dd.getFieldName(field);
         }
 
@@ -141,15 +139,26 @@ public class JsonGenerator {
                         this.mdataDictionary,
                         true
                 );
+                if(!this.validateMessageVersion(fixMessage)) {
+                    throw new InvalidMessage(
+                            "Message version & Data Dictionary Version don't match "
+                            + rawMessage
+                    );
+                }
                 return fixMessage;
             } catch (InvalidMessage m) {
                 // Prints : Skipping Message \Italics -> "8=FIX4.4|...|10=92|" \Italics.
                 System.err.printf("Skipping message \"\033[3m%s\033[3m\"\n", m.getMessage());
+            } catch (FieldNotFound e) {
+                System.err.printf("Couldn't parse message \"\033[3m%s\033[3m\"\n", e.getMessage());
             }
             return null;
         }
 
-        // TODO: Add a validation to check the version of FIX message given and the data dictionary loaded
+        private boolean validateMessageVersion(@NotNull Message message) throws FieldNotFound {
+            int MESSAGE_VERSION_TAG = 8;
+            return message.getHeader().getString(MESSAGE_VERSION_TAG).equals(this.mdataDictionary.getFullVersion());
+        }
 
     }
 }

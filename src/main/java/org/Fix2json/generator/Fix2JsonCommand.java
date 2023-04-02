@@ -25,6 +25,7 @@ public class Fix2JsonCommand implements Callable<Integer> {
             defaultValue = "4.4"
     )
     String fixVersion;
+
     @CommandLine.Option(
             names = {"-mf", "--message-file"},
             description = "File Path containing FIX messages " +
@@ -33,12 +34,14 @@ public class Fix2JsonCommand implements Callable<Integer> {
             required = true
     )
     File messageFile;
+
     @CommandLine.Option(
             names = {"-jf", "--json-file"},
             description = "File Path to write json messages",
             required = true
     )
     File jsonFile;
+
     @CommandLine.Option(names = {"-d", "--delimiter"},
             description = "Delimiter to be used while processing fix messages",
             defaultValue = "|")
