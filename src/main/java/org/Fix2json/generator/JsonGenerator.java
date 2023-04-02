@@ -3,27 +3,100 @@ package org.Fix2json.generator;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import quickfix.ConfigError;
-import quickfix.DataDictionary;
-import quickfix.InvalidMessage;
-import quickfix.Message;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import quickfix.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class JsonGenerator {
-    public void generate(@NotNull Fix2JsonCommand args) throws Exception {
-        FixParser fixParser = new FixParser(args.fixVersion);
-        ArrayList<Message> messages = fixParser.getMessagesFromFile(args.messageFile, args.delimiter);
 
+    @SuppressWarnings("unchecked")
+    private @NotNull JSONObject toJson(@NotNull Message message, @NotNull DataDictionary dd) throws FieldNotFound {
+        JSONObject jsonFixMessage = new JSONObject();
+        jsonFixMessage.put( // Get the jsonified Header part of the FIX message
+                "Header",
+                this.getJsonifiedMessage(
+                        message.getHeader(),
+                        dd
+                )
+        );
+        jsonFixMessage.put( // Get the jsonified Body of the FIX message
+                "Body",
+                this.getJsonifiedMessage(
+                        message,
+                        dd
+                )
+        );
+        jsonFixMessage.put( // Get the jsonified Trailer part of the FIX message
+                "Trailer",
+                this.getJsonifiedMessage(
+                        message.getTrailer(),
+                        dd
+                )
+        );
+        return jsonFixMessage;
     }
 
-    private static class FixParser {
+    @SuppressWarnings("unchecked")
+    private @NotNull JSONObject getJsonifiedMessage(@NotNull FieldMap fieldMap, DataDictionary dd) throws FieldNotFound {
+        JSONObject jsonObject = new JSONObject();
+        Iterator<Field<?>> iterator = fieldMap.iterator();
+        while(iterator.hasNext()) {
+            Field<?> field = iterator.next();
+            if( !dd.getFieldType(field.getTag()).equals(FieldType.NUMINGROUP) ){
+                jsonObject.put(
+                        FixParser.getHumanFieldName(field.getTag(), dd),
+                        fieldMap.getString(field.getTag())
+                );
+            }
+        }
 
-        private final DataDictionary mdataDictionary;
+        Iterator<Integer> groupKeyIterator = fieldMap.groupKeyIterator();
+        while(groupKeyIterator.hasNext()) {
+            JSONArray groupJsonObject = new JSONArray();
+            Integer groupField = groupKeyIterator.next();
+            String humanReadableGroupName = FixParser.getHumanFieldName(groupField, dd);
+            Group group = new Group(groupField, 0);
+            int i = 1;
+            while(fieldMap.hasGroup(i, groupField)) {
+                fieldMap.getGroup(i, group);
+                groupJsonObject.add(this.getJsonifiedMessage(group, dd));
+                i++;
+            }
+            jsonObject.put(humanReadableGroupName, groupJsonObject);
+        }
+
+        return jsonObject;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void generate(@NotNull Fix2JsonCommand args) throws Exception {
+        FixParser fixParser = new FixParser(args.fixVersion);
+        ArrayList<Message> rawMessages = fixParser.getMessagesFromFile(args.messageFile, args.delimiter);
+        JSONArray jsonArray = new JSONArray();
+        for (var message : rawMessages) {
+            jsonArray.add(
+                    this.toJson(
+                            message,
+                            fixParser.mdataDictionary
+                    )
+            );
+        }
+        this.writeJsonMessagesToFile(args.jsonFile.toString(), jsonArray);
+    }
+
+    private void writeJsonMessagesToFile(String jsonFile, JSONArray jsonMessages) throws IOException {
+        FileWriter writer = new FileWriter(jsonFile, false);
+        JSONArray.writeJSONString(jsonMessages, writer);
+        writer.close();
+    }
+
+    public static class FixParser {
+
+        public DataDictionary mdataDictionary;
 
         public FixParser(String fixVersion) throws ConfigError {
             this.mdataDictionary = new DataDictionary(FixParser.getDataDictPathFromVer(fixVersion));
@@ -37,14 +110,14 @@ public class JsonGenerator {
         }
 
         @Contract(pure = true)
-        public String getHumanFieldName(int field) {
-            return mdataDictionary.getFieldName(field);
+        public static String getHumanFieldName(int field, DataDictionary dd) {
+            return dd.getFieldName(field);
         }
 
         @Contract(pure = true)
-        public ArrayList<Message> getMessagesFromFile(
-                                                      @NotNull File messageFile,
-                                                      @NotNull String delimiter) throws IOException {
+        public @NotNull ArrayList<Message> getMessagesFromFile(
+                @NotNull File messageFile,
+                @NotNull String delimiter) throws IOException {
             final ArrayList<Message> messages = new ArrayList<>();
             int totalLines = 0;
             BufferedReader reader = new BufferedReader(new FileReader(messageFile.toString()));
@@ -75,5 +148,8 @@ public class JsonGenerator {
             }
             return null;
         }
+
+        // TODO: Add a validation to check the version of FIX message given and the data dictionary loaded
+
     }
 }
