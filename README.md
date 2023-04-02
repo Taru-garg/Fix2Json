@@ -9,7 +9,22 @@ The application has been built using the following libraries:
 - [QuickFIX/J](https://www.quickfixj.org/)
 
 ## Using the application
+- Clone the repository using the following command
+    ```shell
+    git clone https://github.com/Taru-garg/Fix2Json
+    ```
+- If you have IntelliJ or some other IDE which enables you to directly build JAVA projects, 
+  then great! Not a lot of things to do. Just build the project and run it. You can simply pass in --help or -h as
+  the command line argument.
 
+- To build the repository from scratch follow the steps
+  ```shell
+  brew install mvn
+  # Once in the repo run
+  mvn package
+  # this would create a jar in target directory which you can run as follows
+  java -jar target/Fix2Json-1.0-jar-with-dependencies.jar --help
+  ```
 
 ## Sample generated
 The following section shows a sample message that can be generated from a given FIX message.
