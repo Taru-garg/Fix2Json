@@ -14,23 +14,23 @@ import java.util.Iterator;
 public class JsonGenerator {
 
     @SuppressWarnings("unchecked")
-    private @NotNull JSONObject toJson(@NotNull Message message, DataDictionary dd) throws FieldNotFound {
+    private @NotNull JSONObject toJson(@NotNull Message message, @NotNull DataDictionary dd) throws FieldNotFound {
         JSONObject jsonFixMessage = new JSONObject();
-        jsonFixMessage.put( // Get the JSONified Header part of the FIX message
+        jsonFixMessage.put( // Get the jsonified Header part of the FIX message
                 "Header",
                 this.getJsonifiedMessage(
                         message.getHeader(),
                         dd
                 )
         );
-        jsonFixMessage.put( // Get the JSONified Body of the FIX message
+        jsonFixMessage.put( // Get the jsonified Body of the FIX message
                 "Body",
                 this.getJsonifiedMessage(
                         message,
                         dd
                 )
         );
-        jsonFixMessage.put( // Get the JSONified Trailer part of the FIX message
+        jsonFixMessage.put( // Get the jsonified Trailer part of the FIX message
                 "Trailer",
                 this.getJsonifiedMessage(
                         message.getTrailer(),
@@ -39,8 +39,9 @@ public class JsonGenerator {
         );
         return jsonFixMessage;
     }
+
     @SuppressWarnings("unchecked")
-    private JSONObject getJsonifiedMessage(FieldMap fieldMap, DataDictionary dd) throws FieldNotFound {
+    private @NotNull JSONObject getJsonifiedMessage(@NotNull FieldMap fieldMap, DataDictionary dd) throws FieldNotFound {
         JSONObject jsonObject = new JSONObject();
         Iterator<Field<?>> iterator = fieldMap.iterator();
         while(iterator.hasNext()) {
@@ -52,6 +53,22 @@ public class JsonGenerator {
                 );
             }
         }
+
+        Iterator<Integer> groupKeyIterator = fieldMap.groupKeyIterator();
+        while(groupKeyIterator.hasNext()) {
+            JSONArray groupJsonObject = new JSONArray();
+            Integer groupField = groupKeyIterator.next();
+            String humanReadableGroupName = FixParser.getHumanFieldName(groupField, dd);
+            Group group = new Group(groupField, 0);
+            int i = 1;
+            while(fieldMap.hasGroup(i, groupField)) {
+                fieldMap.getGroup(i, group);
+                groupJsonObject.add(this.getJsonifiedMessage(group, dd));
+                i++;
+            }
+            jsonObject.put(humanReadableGroupName, groupJsonObject);
+        }
+
         return jsonObject;
     }
 
@@ -68,7 +85,6 @@ public class JsonGenerator {
                     )
             );
         }
-        System.out.println(jsonArray);
         this.writeJsonMessagesToFile(args.jsonFile.toString(), jsonArray);
     }
 

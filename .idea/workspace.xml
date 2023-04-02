@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c0bbc29f-ca92-47bc-8170-274fb8fe9c6e" name="Changes" comment="Added logic to generate a basic JSON message from FIX messages">
+    <list default="true" id="c0bbc29f-ca92-47bc-8170-274fb8fe9c6e" name="Changes" comment="Added logic to save the json file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/Fix2json/generator/JsonGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/Fix2json/generator/JsonGenerator.java" afterDir="false" />
     </list>
@@ -46,7 +46,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2NnDOZz3sPJzKuSBmaINn2vhZUk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -117,7 +117,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680386774821</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added logic to save the json file">
+      <created>1680388127301</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1680388127301</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -131,7 +138,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="Option-Parsing" />
+                        <option value="JsonBuilder" />
                       </list>
                     </value>
                   </entry>
@@ -147,9 +154,19 @@
     <MESSAGE value="Initial Commit" />
     <MESSAGE value="Added logic to read and parse fix messages from a file" />
     <MESSAGE value="Added logic to generate a basic JSON message from FIX messages" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added logic to generate a basic JSON message from FIX messages" />
+    <MESSAGE value="Added logic to save the json file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added logic to save the json file" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/Fix2json/generator/JsonGenerator.java</url>
+          <line>58</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="quickfix.Message" memberName="header" />
