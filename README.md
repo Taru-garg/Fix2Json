@@ -113,4 +113,4 @@ Generated JSON equivalent
 </details>
 
 ## Pending Items
-- Currently, there is no validation on the message version, so we use whatever the user passes however if the messages are for some reason not the same version we will run into an error while converting them to their JSON equivalents. We need to add a validation on the message version and the version user said and skip the message if they are not the same version
+<strike>- Currently, there is no validation on the message version, so we use whatever the user passes however if the messages are for some reason not the same version we will run into an error while converting them to their JSON equivalents. We need to add a validation on the message version and the version user said and skip the message if they are not the same version</strike>
