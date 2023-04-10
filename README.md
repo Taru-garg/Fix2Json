@@ -3,6 +3,8 @@
 ## Overview
 Fix2Json is a simple JAVA CLI application that converts a given raw [FIX](https://www.fixtrading.org/what-is-fix/) strings ( which are generally very hard to understand ) to their JSON equivalents ( which one can understand much more clearly ).
 
+Having, a JSON equivalent for the FIX message not only improves the readability of the message  but also makes it easier to store in NoSQL databases as they generally tend to support JSON messages, further it becomes much easier to search through the messages.
+
 The application has been built using the following libraries:
 - [picocli](https://picocli.info/)
 - [simple-json](https://github.com/fangyidong/json-simple)
@@ -113,4 +115,6 @@ Generated JSON equivalent
 </details>
 
 ## Pending Items
-<strike>- Currently, there is no validation on the message version, so we use whatever the user passes however if the messages are for some reason not the same version we will run into an error while converting them to their JSON equivalents. We need to add a validation on the message version and the version user said and skip the message if they are not the same version</strike>
+1. Allow the user to pass their own custom data dictionary.
+2. Allow processing of zipped files.
+3. While the conversion is pretty fast, we can try and improve it by using multiple threads when doing the conversion from QuickFix::Message to JSON.
